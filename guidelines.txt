@@ -1,0 +1,1 @@
+Pivot create a decentralized versioon of yik yak, complete with replies and comments
