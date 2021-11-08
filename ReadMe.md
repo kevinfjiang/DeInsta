@@ -1,12 +1,12 @@
-# EtheReddit
-> **Decentralized Reddit clone built on Ethereum smart contracts**
+# [De-Insta](https://github.com/kevinfjiang/De-Insta)
+> **Decentralized Insta clone built on Ethereum smart contracts and IPFS file share**
 
 
-![License](https://img.shields.io/github/license/kevinfjiang/BirthdaySlackbot.svg)![Lcommit](https://img.shields.io/github/last-commit/kevinfjiang/EtheReddit)
+![License](https://img.shields.io/github/license/kevinfjiang/De-Insta.svg)![Lcommit](https://img.shields.io/github/last-commit/kevinfjiang/De-Insta)
 
 
 ### **Premise:**
-EtheReddit takes the blog post feature, comments, and upvote algorithm of Reddit and deploys it on the blockchain to protect against censorship. Users can also send posters Ethereum if they like the post. Will consider expanding the character limit to full-out medium style blogs and rendering html and everything.
+De-Insta takes the image sharing feature of instagram and adds the storage capabilities on the blockchain so users have more control of what they can post and share. It also allows for direct exchange of photos through IPFS, a peer-to-peer file share system. Intended as a proof of concept and testing of decentralized platforms.
 
 
 ### **Tech/Design choices:**
@@ -15,7 +15,9 @@ EtheReddit takes the blog post feature, comments, and upvote algorithm of Reddit
 
 **Solidity**: Language of Ethereum smart contracts
 
-**Ethereum**: Language has robust smart contract support so it's super easy to set up Posts as contracts where you can input money into them. 
+**Ethereum**: Language has robust smart contract support
+
+**IPFS**: Peer to peer file share, much cheaper than storing on the blockchain, which is more secure but crazy expensive. This way, we ensure that posting is cheap-ish
 
 
 ### **TODO:**
@@ -29,14 +31,14 @@ EtheReddit takes the blog post feature, comments, and upvote algorithm of Reddit
 - [x] Enable deletes and write the registry
 - [x] Enable votes, posts, comments
 - [x] Finish writing Solidity code
-- [ ] Expand character limit, consider allowing html
+- [ ] Enable followers
 
 
 **Backend**
 - [x] Create bindings for Solidity to Go with Geth
 - [x] Enable the blockchain to emit events
 - [ ] Develop the backend for the interactions between posts
-- [ ] Develop the algorithm for top active posts
+- [ ] Develop the algorithm for top active posts/ your following
 
 **Frontend**
 - [ ] Develop front end that is passable (Not a front end guy lol)
