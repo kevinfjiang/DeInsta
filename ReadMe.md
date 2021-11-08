@@ -6,16 +6,16 @@
 
 
 ### **Premise:**
-EtheReddit takes the blog post feature, comments, and upvote algorithim of Reddit and deploys it on the blockchain to protect against censorship. Users can also send posters Ethereum if they like the post. Will consider expanding the character limit to full out medium style blogs and rendering html and everything.
+EtheReddit takes the blog post feature, comments, and upvote algorithm of Reddit and deploys it on the blockchain to protect against censorship. Users can also send posters Ethereum if they like the post. Will consider expanding the character limit to full-out medium style blogs and rendering html and everything.
 
 
 ### **Tech/Design choices:**
 
-**Go**: Favorite backend language right now, Geth autoo encodes targets from Solidity -> Go
+**Go**: Favorite backend language right now, Geth auto encodes targets from Solidity -> Go
 
-**Solidity**: Languagge of Ethereum smart contracts
+**Solidity**: Language of Ethereum smart contracts
 
-**Ethereum**: Language has really robust smart contract support so it's super easy to set up Posts as contracts where you can input money into them. 
+**Ethereum**: Language has robust smart contract support so it's super easy to set up Posts as contracts where you can input money into them. 
 
 
 ### **TODO:**
@@ -36,7 +36,7 @@ EtheReddit takes the blog post feature, comments, and upvote algorithim of Reddi
 - [x] Create bindings for Solidity to Go with Geth
 - [x] Enable the blockchain to emit events
 - [ ] Develop the backend for the interactions between posts
-- [ ] Develop the algorithim for top active posts
+- [ ] Develop the algorithm for top active posts
 
 **Frontend**
 - [ ] Develop front end that is passable (Not a front end guy lol)
