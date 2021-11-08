@@ -1,11 +1,7 @@
-pragma solidity ^0.8.0;
-// SPDX-License-Identifier: MIT
 
-import "./DDaccount.sol";
-
-contract DDRegistry {
+contract ERRegistry {
     
-    bytes32 public Name;
+    string public Name;
     string public Description;
 
     // mappings to look up account names, account ids and addresses
@@ -19,22 +15,17 @@ contract DDRegistry {
     // owner
     address private admin;
 
-    uint256 public Balance;
-
     
     // if a newer version of this registry is available, force users to use it
     bool public _registrationDisabled;
 
-    constructor(bytes32 Name_, string memory Description_) {
-        Name = Name_;
-        Description = Description_;
+    constructor(string memory SubName, string memory SubDescription) {
+        require(bytes(SubName).length < 20);
+        Name = SubName;
+        Description = SubDescription;
         admin = msg.sender; // can be changed later
         numberOfAccounts = 0;
         _registrationDisabled = false;
-    }
-
-    receive() payable external{
-        Balance+=msg.value;
     }
 
     modifier isAdmin{
@@ -53,7 +44,8 @@ contract DDRegistry {
         // Somehow to do a dependency injection, somehow, main.go backend will be a bitch
         addressToAccountName[accountAddress] = name;
         accountNameToAddress[name] = accountAddress;
-        accountIdToAccountAddress[numberOfAccounts++] = accountAddress;
+        accountIdToAccountAddress[numberOfAccounts] = accountAddress;
+        numberOfAccounts++;
     }
     
 
@@ -68,7 +60,7 @@ contract DDRegistry {
     function getAddressOfId(uint id) isAdmin public view returns (address addr) {
         addr = accountIdToAccountAddress[id];
     }
-
+    
     function unregister() public {
         string memory unregisteredAccountName = addressToAccountName[msg.sender];
         addressToAccountName[msg.sender] = "";
@@ -90,11 +82,7 @@ contract DDRegistry {
     }
     
     function adminRetrieveDonations() public isAdmin{
-        payable(admin).transfer(Balance);
+        payable(admin).transfer(address(this).balance);
     }
-    //TODO create a functioon that can track which are the top posts of the network, consider adding 
-    // an event into DDAccount oor something, essentially register every new Post and put them here, or every poost raises event
-    // and every event we log the adress and check it  for the posot
-    // Check last 5 posts?
             
 }

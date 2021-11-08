@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 // SPDX-License-Identifier: MIT
 
-contract DDAccount {
+contract ERAccount {
     string public Name;
 
     address[] public Posts;
@@ -24,19 +24,19 @@ contract DDAccount {
     }
     
     // create new tweet
-    function PostMessage(string memory postString) public isAdmin {
-        require(bytes(postString).length < 500, "Post exceeds character limit"); 
-        Post TempPost = new Post(postString, CountPosts++); // Dependency injectiooon or no?
+    function PostMessage(string memory PostName_, string memory PostString_) public isAdmin returns(address postaddress) {
+        require(bytes(PostString_).length < 500, "Post exceeds character limit"); 
+        Post TempPost = new Post(PostName_, PostString_, CountPosts); 
         Posts.push(address(TempPost));
-        
+        return address(TempPost);
     }
 
     function DeletePost(uint PostID) external isAdmin{
-        Post(payable(Posts[PostID])).DeletePost();
+        Post(Posts[PostID]).DeletePost();
         delete Posts[PostID];
     }
 
-    function GetPost(uint PostID) public view returns(address Post_){
+    function GetPost(uint PostID) public view returns(address postaddress){
         // Rewrite verbose returns of every item
         return Posts[PostID];
     }
@@ -57,16 +57,16 @@ contract Post{
     int16 public Karma;
     mapping(address => int8) private voters;
 
+    string public PostName;
     string public PostString;
     
     address private Owner;
-    uint256 public Balance;
 
     uint public CountComments;
-    Comment[] public Comments;
+    mapping(uint => Comment) public Comments;
 
     modifier isOwner(){
-        require(tx.origin == Owner);
+        require(msg.sender == Owner);
         _;
     }
 
@@ -82,55 +82,59 @@ contract Post{
         address Poster;
     }
 
-    constructor(string memory postString, uint CountPosts){
+    event PostBanner(
+        uint timestamp,
+        int16 Karma,
+
+        address Post,
+
+        string PostName,
+        string  PostString);
+
+    constructor(string memory PostName_, string memory PostString_, uint CountPosts){
         timestamp = block.timestamp;
-        PostString = postString;
+        PostName = PostName_;
+        PostString = PostString_;
         PostNumber = CountPosts;
         Owner = tx.origin;
+        emit PostBanner(timestamp, Karma, address(this), PostName, PostString);
     } 
-
-
-    receive() payable external{
-        Balance+=msg.value;
-    }
 
     function AddComment(string memory CommentString) public {
         require(bytes(CommentString).length < 250, "Post exceeds character limit");
-        Comment storage temp = Comments[CountComments++];
+        Comment storage newComment = Comments[CountComments];
 
-        temp.timestamp = block.timestamp;
-        temp.CommentNumber = CountComments;
+        newComment.timestamp = block.timestamp;
+        newComment.CommentNumber = CountComments;
 
-        temp.CommentString = CommentString;
-        temp.Poster = msg.sender;
+        newComment.CommentString = CommentString;
+        newComment.Poster = msg.sender;
+        
+        CountComments++;
     }
 
     // Can't wait to get generics/templates or interfaces
     function Vote(int8 vote) public {
-        require(voters[msg.sender] == 0 || vote == 0);
-        if (vote != 0){
-            Karma+=vote;
-            voters[msg.sender]=vote;
-        } else{
-            Karma-=voters[msg.sender];
-            voters[msg.sender]=vote;
-        }
+        vote = vote>0? int8(1) : (vote<0? -1:int8(0));
+        require(voters[msg.sender] != vote, "Must change prev vote");
+        
+        Karma-=voters[msg.sender];
+        Karma+=vote;
+        voters[msg.sender]=vote;
+        emit PostBanner(timestamp, Karma, address(this), PostName, PostString);
     }
 
     function Vote(int8 vote, uint CommentNumber) public {
-        require(Comments[CommentNumber].voters[msg.sender] == 0|| vote == 0);
-        if (vote != 0){
-            Comments[CommentNumber].Karma+=vote;
-            Comments[CommentNumber].voters[msg.sender]=vote;
-        } else{
-            Comments[CommentNumber].Karma-=Comments[CommentNumber].voters[msg.sender];
-            Comments[CommentNumber].voters[msg.sender]=vote;
-        }
+        vote = vote>0? int8(1): (vote<0? -1: int8(0));
+        require(Comments[CommentNumber].voters[msg.sender] != vote, "Must change prev vote");
+        
+        Comments[CommentNumber].Karma-=Comments[CommentNumber].voters[msg.sender];
+        Comments[CommentNumber].Karma+=vote;
+        Comments[CommentNumber].voters[msg.sender]=vote;
     }
 
     function Transfer() public isOwner{
-        payable(Owner).transfer(Balance);
-        Balance = 0;
+        payable(Owner).transfer(address(this).balance);
     }
 
     function DeletePost() public isOwner{
