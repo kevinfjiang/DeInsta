@@ -6,14 +6,14 @@
 
 
 ### **Premise:**
-DeInsta takes the image sharing feature of instagram and adds the storage capabilities on the blockchain so users have more control of what they can post and share. It also allows for direct exchange of photos through IPFS, a peer-to-peer file share system. Intended as a proof of concept and testing of decentralized platforms.
+DeInsta takes the image sharing feature of instagram and adds the storage capabilities on the blockchain so users have more control of what they can post and share. It also allows for direct exchange of photos through IPFS, a peer-to-peer file share system. Intended as a proof of concept and testing of decentralized platforms. Currently a work in proogress
   
 =======
 
 
 ### **Tech/Design choices:**
 
-**Go**: Favorite backend language right now, Geth auto encodes targets from Solidity -> Go
+**Go**: Favorite backend language right now, Geth auto encodes targets from Solidity => Go
 
 **Solidity**: Language of Ethereum smart contracts
 

@@ -220,7 +220,7 @@ func getUnixfsNode(path string) (files.Node, error) {
 
 // var flagExp = flag.Bool("experimental", false, "enable experimental features")
 
-func main() {
+func Upload(string Path) {
 	// flag.Parse()
 
 	/// --- Part I: Getting a IPFS node running

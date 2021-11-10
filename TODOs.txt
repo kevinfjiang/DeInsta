@@ -1,6 +1,7 @@
 1. Finish up backend, build the ipfs file share, file upload validation
     For all on same registry store files there
 2. Build the API, for the backend, recreating every function
+    2b Add Ganche and fox support
 3. Develop React Bindings, start the websocket server
 4. Replace everywhere you see firebase with yoour custom api bindings to the websocket
-5. Build a delete post, a profile page, a search page, tip button
+5. Build a search feature to search foor oother accounts
