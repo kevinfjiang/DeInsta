@@ -14,7 +14,7 @@ contract EIaccount { // Following
     address owner;
     mapping(address => bool) public Followers;
     uint public CountFollowers;
-    address[] public Following;
+    mapping(address => bool) public Following;
     uint public CountFollowing;
     
     struct Post{
@@ -122,6 +122,29 @@ contract EIaccount { // Following
     
     function Transfer() public isAdmin{
         payable(owner).transfer(address(this).balance);
+    }
+
+    function Follow(address account) public isAdmin{
+        Following[account]=true;
+        CountFollowers++;
+    }
+    function UnFollow(address account) public isAdmin{
+        Following[account]=false;
+        CountFollowers--;
+    }
+
+    function AddFollower(address account) public isAdmin{
+        Followers[account]=true;
+        CountFollowing++;
+    }
+
+    function RemoveFollower(address account) public isAdmin{
+        Followers[account]=true;
+        CountFollowing++;
+    }
+
+    function CheckFollowPost(address account) public view returns(bool FollowPost){
+        return Followers[account];
     }
 
     function adminDeleteAccount() public payable isAdmin {

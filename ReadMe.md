@@ -1,12 +1,14 @@
-# [De-Insta](https://github.com/kevinfjiang/De-Insta)
+## **DeInsta**
 > **Decentralized Insta clone built on Ethereum smart contracts and IPFS file share**
 
 
-![License](https://img.shields.io/github/license/kevinfjiang/De-Insta.svg)![Lcommit](https://img.shields.io/github/last-commit/kevinfjiang/De-Insta)
+![License](https://img.shields.io/github/license/kevinfjiang/DeInsta.svg) ![Lcommit](https://img.shields.io/github/last-commit/kevinfjiang/DeInsta)
 
 
 ### **Premise:**
-De-Insta takes the image sharing feature of instagram and adds the storage capabilities on the blockchain so users have more control of what they can post and share. It also allows for direct exchange of photos through IPFS, a peer-to-peer file share system. Intended as a proof of concept and testing of decentralized platforms.
+DeInsta takes the image sharing feature of instagram and adds the storage capabilities on the blockchain so users have more control of what they can 
+post and share. It also allows for direct exchange of photos through IPFS, a peer-to-peer file share system. Intended as a proof of concept and 
+testing of decentralized platforms.
 
 
 ### **Tech/Design choices:**
@@ -15,7 +17,9 @@ De-Insta takes the image sharing feature of instagram and adds the storage capab
 
 **Solidity**: Language of Ethereum smart contracts
 
-**Ethereum**: Language has robust smart contract support
+**Ethereum**: Language has smart contracts
+
+**React**: UI, pretty self explanatory
 
 **IPFS**: Peer to peer file share, much cheaper than storing on the blockchain, which is more secure but crazy expensive. This way, we ensure that posting is cheap-ish
 
