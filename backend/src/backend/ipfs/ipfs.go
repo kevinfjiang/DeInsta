@@ -216,48 +216,30 @@ func getUnixfsNode(path string) (files.Node, error) {
 	return f, nil
 }
 
-/// -------
+/// TODO THIS BACKEND TMRW 
 
-// var flagExp = flag.Bool("experimental", false, "enable experimental features")
+func genRepo(){
 
-func Upload(string Path) {
-	// flag.Parse()
+}
 
-	/// --- Part I: Getting a IPFS node running
-
+func spawnNode(ctx context.Context) icore.CoreAPI{
 	fmt.Println("-- Getting an IPFS node running -- ")
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	/*
 		// Spawn a node using the default path (~/.ipfs), assuming that a repo exists there already
-		fmt.Println("Spawning node on default repo")
-		ipfs, err := spawnDefault(ctx)
-		if err != nil {
-			panic(fmt.Errorf("failed to spawnDefault node: %s", err))
-		}
-	*/
-
-	// Spawn a node using a temporary path, creating a temporary repo for the run TODO don't do this
-	fmt.Println("Spawning node on a temporary repo")
-	ipfs, err := spawnEphemeral(ctx)
+	fmt.Println("Spawning node on default repo")
+	ipfs, err := spawnDefault(ctx)
 	if err != nil {
-		panic(fmt.Errorf("failed to spawn ephemeral node: %s", err))
+		panic(fmt.Errorf("failed to spawnDefault node: %s", err))
 	}
-
 	fmt.Println("IPFS node is running")
+	return ipfs
+}
 
-	/// --- Part II: Adding a file and a directory to IPFS
-
+func uploadToIPFS(ctx context.Context, ipfs icore.CoreAPI, inputPathFile string) icorepath.Resolved {
+	
 	fmt.Println("\n-- Adding and getting back files & directories --")
-
-	inputBasePath := "../example-folder/"
-	inputPathFile := inputBasePath + "ipfs.paper.draft3.pdf"
-	inputPathDirectory := inputBasePath + "test-dir"
-
+	
 	someFile, err := getUnixfsNode(inputPathFile) // Upload via location
-	if err != nil {
+	if err != nil {								  // look intto upload via file
 		panic(fmt.Errorf("Could not get File: %s", err))
 	}
 
@@ -267,19 +249,26 @@ func Upload(string Path) {
 	}
 
 	fmt.Printf("Added file to IPFS with CID %s\n", cidFile.String())
+	return cidFile
 
-	someDirectory, err := getUnixfsNode(inputPathDirectory)
-	if err != nil {
-		panic(fmt.Errorf("Could not get File: %s", err))
-	}
+}
 
-	cidDirectory, err := ipfs.Unixfs().Add(ctx, someDirectory)
-	if err != nil {
-		panic(fmt.Errorf("Could not add Directory: %s", err))
-	}
 
-	fmt.Printf("Added directory to IPFS with CID %s\n", cidDirectory.String())
+// var flagExp = flag.Bool("experimental", false, "enable experimental features")
 
+func Upload(Path string) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	ipfs := spawnNode(ctx)
+	// Spawn a node using a temporary path, creating a temporary repo for the run TODO don't do this
+	
+
+	uploadToIPFS(ctx, ipfs, Path)
+	
+}
+
+func retrieve(){
 	/// --- Part III: Getting the file and directory you added back
 
 	outputBasePath, err := ioutil.TempDir("", "example")

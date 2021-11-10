@@ -5,13 +5,12 @@
 ![License](https://img.shields.io/github/license/kevinfjiang/DeInsta.svg) ![Lcommit](https://img.shields.io/github/last-commit/kevinfjiang/DeInsta)
 
 
-### **Premise:**
+## **Premise:**
 DeInsta takes the image sharing feature of instagram and adds the storage capabilities on the blockchain so users have more control of what they can post and share. It also allows for direct exchange of photos through IPFS, a peer-to-peer file share system. Intended as a proof of concept and testing of decentralized platforms. Currently a work in proogress
   
-=======
 
 
-### **Tech/Design choices:**
+## **Tech/Design choices:**
 
 **Go**: Favorite backend language right now, Geth auto encodes targets from Solidity => Go
 
@@ -19,7 +18,7 @@ DeInsta takes the image sharing feature of instagram and adds the storage capabi
 
 **Ethereum**: Language has smart contracts
 
-**React**: UI, pretty self explanatory
+**React**: UI, pretty self explanatory. Has some nice options to interact with a Go backend
 
 **IPFS**: Peer to peer file share, much cheaper than storing on the blockchain, which is more secure but crazy expensive. This way, we ensure that posting is cheap-ish
 
@@ -49,3 +48,10 @@ DeInsta takes the image sharing feature of instagram and adds the storage capabi
 - [ ] Develop front end that is passable (Not a front end guy lol)
 - [ ] Choose a frontend from existing builds and modify the API to be workable with golang
 </details>
+
+## **CREDITS:**
+**Credit goes to Sandermoen.**
+
+I am NOT a frontend guy. I'm slowly attempting to learn and incorporate React. 
+The beautiful front end is courtesy of this repo https://github.com/Sandermoen/instaclone.
+I will be gradually ripping apart the backend and incorporating blockchain functionality.
