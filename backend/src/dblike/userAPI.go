@@ -23,10 +23,18 @@ type AccountAPI struct{
 	client *ethclient.Client
 }
 
-func CreateAccount(endpointURL string, walletInfo Wallet, Name_ string, Bio_ string)(AccountAPI){
+func (AccountAPI) CreateAccount(endpointURL string, walletInfo Wallet, Name_ string, Bio_ string)(AccountAPI){
 	auth, blockchain := CreateConnection(endpointURL, walletInfo)
 
 	addr, _, account, _ := User.DeployDIAccount(auth, blockchain, Name_)
+	//TODO include a wait for the contract to deploy
+	return AccountAPI{addr, account, auth, blockchain}
+}
+
+func (AccountAPI) LogIn(endpointURL string, walletInfo Wallet, RegistryAddr common.Address)(AccountAPI){
+	auth, blockchain := CreateConnection(endpointURL, walletInfo)
+
+	// addr, _, account, _ := User.DeployDIAccount(auth, blockchain, Name_)
 	//TODO include a wait for the contract to deploy
 	return AccountAPI{addr, account, auth, blockchain}
 }
@@ -38,6 +46,19 @@ func (acc AccountAPI) SetBio(bio string){
 func (acc AccountAPI) CreatePost(PostID int64, PostURL_ string, Caption_ string){
 	acc.account.CreatePost(acc.opts, PostURL_, Caption_)
 	// Needs some interaction with ipfs
+}
+
+func (acc AccountAPI) GetPost(PostID int64)(*DisplayPost, error){
+	comments_, err := acc.account.GetComments(&bind.CallOpts{Pending: true}, big.NewInt(PostID))
+	if err != nil {
+		return nil, err
+	}
+
+	post_, err := acc.account.Posts(&bind.CallOpts{Pending: true}, big.NewInt(PostID))
+	if err != nil {
+		return nil, err
+	}
+	return &(DisplayPost{post_, comments_}), nil
 }
 
 func (acc AccountAPI) DeletePost(PostID int64){

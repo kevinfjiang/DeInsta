@@ -3,7 +3,11 @@ package backendapi
 import(
 	"context"
 	"log"
+	"math/big"
 	"strings"
+	
+	"github.com/kevinfjiang/DeInsta/dblike/User"
+	
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	// "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -35,3 +39,19 @@ func CreateConnection(endpointURL string, walletInfo Wallet)(*bind.TransactOpts,
 
 	return auth, blockchain
 }
+
+
+
+type DisplayPost struct{
+	Post struct{
+		Timestamp *big.Int 
+		PostNumber *big.Int
+		Karma int16
+		IPFSurl string 
+		Caption string
+		CountComments *big.Int
+	} 
+	
+	Comments []User.DIAccountComment 
+}
+	

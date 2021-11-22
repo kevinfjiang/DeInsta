@@ -1,4 +1,5 @@
 pragma solidity ^0.8.0;
+pragma abicoder v2;
 // SPDX-License-Identifier: MIT
 
 contract DIAccount {
@@ -50,6 +51,11 @@ contract DIAccount {
 
         uint CountComments;
         Comment[] Comments;
+        mapping(address => int8)[] CommentVoters;
+    }
+
+    function GetComments(uint PostID) public view returns(Comment[] memory CommentList){
+        return Posts[PostID].Comments;
     }
 
     struct Comment{
@@ -57,7 +63,6 @@ contract DIAccount {
         uint CommentNumber;
 
         int16 Karma;
-        mapping(address => int8) voters;
 
         string CommentString;
 
@@ -84,6 +89,10 @@ contract DIAccount {
         CountPosts++;
     }
 
+    function GetPost(uint PostID) public returns(Comment[] memory){
+        
+    }
+
     // Can't wait to get generics/templates or interfaces
     function Vote(int8 vote, uint PostNumber) public {
         vote = vote>0? int8(1) : (vote<0? -1:int8(0));
@@ -95,6 +104,7 @@ contract DIAccount {
         Karma+=vote;
         Posts[PostNumber].voters[msg.sender]=vote;
     }
+
 
     function AddComment(uint PostNumber, string memory CommentString) public {
         require(bytes(CommentString).length < 50, "Post exceeds character limit");
@@ -111,11 +121,11 @@ contract DIAccount {
 
     function CommentVote(int8 vote, uint PostNumber, uint CommentNumber) public {
         vote = vote>0? int8(1): (vote<0? -1: int8(0));
-        require(Posts[PostNumber].Comments[CommentNumber].voters[msg.sender] != vote, "You've already voted");
+        require(Posts[PostNumber].CommentVoters[CommentNumber][msg.sender] != vote, "You've already voted");
         
-        Posts[PostNumber].Comments[CommentNumber].Karma-=Posts[PostNumber].Comments[CommentNumber].voters[msg.sender];
+        Posts[PostNumber].Comments[CommentNumber].Karma-=Posts[PostNumber].CommentVoters[CommentNumber][msg.sender];
         Posts[PostNumber].Comments[CommentNumber].Karma+=vote;
-        Posts[PostNumber].Comments[CommentNumber].voters[msg.sender]=vote;
+        Posts[PostNumber].CommentVoters[CommentNumber][msg.sender]=vote;
     }
 
 
