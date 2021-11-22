@@ -1,8 +1,9 @@
 pragma solidity ^0.8.0;
 // SPDX-License-Identifier: MIT
 
-contract ERAccount {
+contract DIAccount {
     string public Name;
+    string public Bio;
 
     address[] public Posts;
     int16 public Karma; // Add more robust Karma system
@@ -23,12 +24,16 @@ contract ERAccount {
         _;
     }
     
-    // create new tweet
+    // create new post
     function PostMessage(string memory PostName_, string memory PostString_) public isAdmin returns(address postaddress) {
         require(bytes(PostString_).length < 500, "Post exceeds character limit"); 
         Post TempPost = new Post(PostName_, PostString_, CountPosts); 
         Posts.push(address(TempPost));
         return address(TempPost);
+    }
+
+    function SetBio(string memory Bio_) public isAdmin {
+       Bio=Bio_;
     }
 
     function DeletePost(uint PostID) external isAdmin{
@@ -58,7 +63,7 @@ contract Post{
     mapping(address => int8) private voters;
 
     string public PostName;
-    string public PostString;
+    string public Caption;
     
     address private Owner;
 
@@ -66,7 +71,7 @@ contract Post{
     mapping(uint => Comment) public Comments;
 
     modifier isOwner(){
-        require(msg.sender == Owner);
+        require(msg.sender == Owner || tx.origin==Owner);
         _;
     }
 
@@ -84,20 +89,19 @@ contract Post{
 
     event PostBanner(
         uint timestamp,
-        int16 Karma,
-
         address Post,
+        address owner,
 
         string PostName,
         string  PostString);
 
-    constructor(string memory PostName_, string memory PostString_, uint CountPosts){
+    constructor(string memory PostName_, string memory Caption_, uint CountPosts){
         timestamp = block.timestamp;
         PostName = PostName_;
-        PostString = PostString_;
+        Caption = Caption_;
         PostNumber = CountPosts;
         Owner = tx.origin;
-        emit PostBanner(timestamp, Karma, address(this), PostName, PostString);
+        emit PostBanner(timestamp, address(msg.sender), address(this), PostName, Caption);
     } 
 
     function AddComment(string memory CommentString) public {
@@ -121,7 +125,6 @@ contract Post{
         Karma-=voters[msg.sender];
         Karma+=vote;
         voters[msg.sender]=vote;
-        emit PostBanner(timestamp, Karma, address(this), PostName, PostString);
     }
 
     function Vote(int8 vote, uint CommentNumber) public {

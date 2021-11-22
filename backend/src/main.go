@@ -1,7 +1,7 @@
 package main
 import(
 	"github.com/gorilla/websocket"
-	"github.com/kevinfjiang/DeInsta/backend/User"
+	"github.com/kevinfjiang/DeInsta/backend/"
 )
 
 func main(){

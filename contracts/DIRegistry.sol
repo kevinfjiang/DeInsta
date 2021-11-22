@@ -2,10 +2,9 @@ pragma solidity ^0.8.0;
 // SPDX-License-Identifier: MIT
 
 
-contract EIregistry {
+contract DIregistry {
     
     string public Name;
-    string public Description;
 
     // mappings to look up account names, account ids and addresses
     mapping (address => string) private addressToAccountName;
@@ -22,10 +21,14 @@ contract EIregistry {
     // if a newer version of this registry is available, force users to use it
     bool public _registrationDisabled;
 
-    constructor(string memory SubName, string memory SubDescription) {
-        require(bytes(SubName).length < 20);
-        Name = SubName;
-        Description = SubDescription;
+    event NewUser(
+        uint timestamp,
+        address addr,
+        uint accountNumber);
+
+    constructor(string memory ServerName) {
+        require(bytes(ServerName).length < 20);
+        Name = ServerName;
         admin = msg.sender; // can be changed later
         numberOfAccounts = 0;
         _registrationDisabled = false;
@@ -49,6 +52,7 @@ contract EIregistry {
         accountNameToAddress[name] = accountAddress;
         accountIdToAccountAddress[numberOfAccounts] = accountAddress;
         numberOfAccounts++;
+        emit NewUser(block.timestamp, accountAddress, numberOfAccounts);
     }
     
 
