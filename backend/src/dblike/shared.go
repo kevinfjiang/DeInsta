@@ -1,14 +1,15 @@
 package backendapi
 
-import(
+import (
 	"context"
 	"log"
 	"math/big"
 	"strings"
-	
+
 	"github.com/kevinfjiang/DeInsta/dblike/User"
-	
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
 	// "github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
@@ -45,6 +46,7 @@ func CreateConnection(endpointURL string, walletInfo Wallet)(*bind.TransactOpts,
 type DisplayPost struct{
 	Post struct{
 		Timestamp *big.Int 
+		Account common.Address
 		PostNumber *big.Int
 		Karma int16
 		IPFSurl string 

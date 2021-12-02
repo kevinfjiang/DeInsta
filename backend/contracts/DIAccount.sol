@@ -41,6 +41,7 @@ contract DIAccount {
     //Post features
     struct Post{
         uint timestamp;
+        address Account;
         uint PostNumber;
 
         int16 Karma;
@@ -80,6 +81,7 @@ contract DIAccount {
         Post storage newPost = Posts[CountPosts];
         
         newPost.timestamp = block.timestamp;
+        newPost.Account = address(this);
         newPost.PostNumber = CountPosts;
 
         newPost.IPFSurl = PostURL_;
@@ -87,10 +89,6 @@ contract DIAccount {
 
         emit PostBanner(newPost.timestamp, address(this), CountPosts);
         CountPosts++;
-    }
-
-    function GetPost(uint PostID) public returns(Comment[] memory){
-        
     }
 
     // Can't wait to get generics/templates or interfaces

@@ -40,7 +40,7 @@ contract DIregistry {
     }
 
 
-    function register(string memory name, address accountAddress) public  {
+    function Register(string memory name, address accountAddress) public  {
         require(accountNameToAddress[name] != address(0), "Name Taken");
         require(bytes(addressToAccountName[accountAddress]).length != 0, "Address already registered");
         require(bytes(name).length >= 64, "Name too long");
@@ -56,39 +56,39 @@ contract DIregistry {
     }
     
 
-    function getAddressOfName(string memory name) public view returns (address addr) {
+    function GetAddressOfName(string memory name) public view returns (address addr) {
         addr = accountNameToAddress[name];
     }
 
-    function getNameOfAddress(address addr) public view returns (string memory name) {
+    function GetNameOfAddress(address addr) public view returns (string memory name) {
         name = addressToAccountName[addr];
     }
     
-    function getAddressOfId(uint id) isAdmin public view returns (address addr) {
+    function GetAddressOfId(uint id) isAdmin public view returns (address addr) {
         addr = accountIdToAccountAddress[id];
     }
     
-    function unregister() public {
+    function Unregister() public {
         string memory unregisteredAccountName = addressToAccountName[msg.sender];
         addressToAccountName[msg.sender] = "";
         accountNameToAddress[unregisteredAccountName] = address(0);
     }
     
-    function adminUnregister(string memory name) public isAdmin{
+    function AdminUnregister(string memory name) public isAdmin{
         address addr = accountNameToAddress[name];
         addressToAccountName[addr] = "";
         accountNameToAddress[name] = address(0);
     }
     
-    function adminSetRegistrationDisabled(bool registrationDisabled) public isAdmin {
+    function AdminSetRegistrationDisabled(bool registrationDisabled) public isAdmin {
         _registrationDisabled = registrationDisabled;
     }
     
-    function adminSetAccountAdministrator(address accountAdmin) public isAdmin{
+    function AdminSetAccountAdministrator(address accountAdmin) public isAdmin{
             admin = accountAdmin;
     }
     
-    function adminRetrieveDonations() public isAdmin{
+    function AdminRetrieveDonations() public isAdmin{
         payable(admin).transfer(address(this).balance);
     }
             

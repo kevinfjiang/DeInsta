@@ -2,8 +2,9 @@ package backendapi
 
 import (
 	"math/big"
+	"errors"
+	"log"
 	
-
 	"github.com/kevinfjiang/DeInsta/dblike/User"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -16,9 +17,9 @@ import (
 
 const RinkebyEndpoint string = "https://rinkeby.infura.io/v3/cad14f2599ad47ec8d96c4413f80b5ed"
 type AccountAPI struct{
-	address common.Address
 	account *User.DIAccount
 
+	address common.Address
 	opts *bind.TransactOpts 
 	client *ethclient.Client
 }
@@ -26,17 +27,26 @@ type AccountAPI struct{
 func (AccountAPI) CreateAccount(endpointURL string, walletInfo Wallet, Name_ string, Bio_ string)(AccountAPI){
 	auth, blockchain := CreateConnection(endpointURL, walletInfo)
 
-	addr, _, account, _ := User.DeployDIAccount(auth, blockchain, Name_)
+	addr, _, account, err := User.DeployDIAccount(auth, blockchain, Name_)
+	if err != nil {
+		log.Fatalf("Failed to creating account: %v", err)
+	}
 	//TODO include a wait for the contract to deploy
-	return AccountAPI{addr, account, auth, blockchain}
+	return AccountAPI{account, addr, auth, blockchain}
 }
 
-func (AccountAPI) LogIn(endpointURL string, walletInfo Wallet, RegistryAddr common.Address)(AccountAPI){
-	auth, blockchain := CreateConnection(endpointURL, walletInfo)
+func (AccountAPI) LogIn(accountName_ string, r Registry)(AccountAPI){
+	addr, err := r.GetAddressOfName(&bind.CallOpts{Pending: true}, accountName_)
+	if err != nil {
+		log.Fatalf("Failed to creating account: %v", err)
+	}
 
-	// addr, _, account, _ := User.DeployDIAccount(auth, blockchain, Name_)
+	account, err := User.NewDIAccount(addr, r.client)
+	if err != nil {
+		log.Fatalf("Failed to creating logging in: %v", err)
+	}
 	//TODO include a wait for the contract to deploy
-	return AccountAPI{addr, account, auth, blockchain}
+	return AccountAPI{account, addr, r.opts, r.client}
 }
 
 func (acc AccountAPI) SetBio(bio string){
@@ -49,16 +59,58 @@ func (acc AccountAPI) CreatePost(PostID int64, PostURL_ string, Caption_ string)
 }
 
 func (acc AccountAPI) GetPost(PostID int64)(*DisplayPost, error){
-	comments_, err := acc.account.GetComments(&bind.CallOpts{Pending: true}, big.NewInt(PostID))
-	if err != nil {
-		return nil, err
-	}
-
 	post_, err := acc.account.Posts(&bind.CallOpts{Pending: true}, big.NewInt(PostID))
 	if err != nil {
 		return nil, err
 	}
+	
+	comments_, err := acc.GetComments(PostID)
+	if err != nil {
+		return nil, err
+	}
+	
 	return &(DisplayPost{post_, comments_}), nil
+}
+
+func (acc AccountAPI) GetComments(PostID int64)([]User.DIAccountComment, error){
+	comments_, err := acc.account.GetComments(&bind.CallOpts{Pending: true}, big.NewInt(PostID))
+	if err != nil {
+		return nil, err
+	}
+	return comments_, nil
+}
+
+func (acc AccountAPI) PostVote(P DisplayPost, vote int8) (error){
+	if _, present := map[int8]bool{-1: true, 0: true, 1: true}[vote]; !present{
+		return errors.New("Invalid vote, make sure the vote casted is either -1, 0, or 1")
+	}
+
+	acct, err := User.NewDIAccount(P.Post.Account, acc.client)
+	if err != nil {
+		return errors.New("Failed to find account: %v")
+	}
+
+	_, err = acct.Vote(acc.opts, vote, P.Post.PostNumber)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (acc AccountAPI) VoteComment(P DisplayPost, CommentID int64, vote int8)(error){
+	if _, present := map[int8]bool{-1: true, 0: true, 1: true}[vote]; !present{
+		return errors.New("Invalid vote, make sure the vote casted is either -1, 0, or 1")
+	}
+	acct, err := User.NewDIAccount(P.Post.Account, acc.client)
+	if err != nil {
+		return errors.New("Failed to find account: %v")
+	}
+
+	_, err = acct.CommentVote(acc.opts, vote, P.Post.PostNumber, big.NewInt(CommentID))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (acc AccountAPI) DeletePost(PostID int64){
