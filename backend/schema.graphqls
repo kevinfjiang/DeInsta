@@ -1,0 +1,15 @@
+type User{
+
+}
+
+type Feed{
+    
+}
+
+type Post{
+
+}
+
+type Comment{
+
+}

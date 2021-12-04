@@ -80,7 +80,7 @@ func (acc AccountAPI) GetComments(PostID int64)([]User.DIAccountComment, error){
 	return comments_, nil
 }
 
-func (acc AccountAPI) PostVote(P DisplayPost, vote int8) (error){
+func (acc AccountAPI) PostVote(targ common.Address, P DisplayPost, vote int8) (error){
 	if _, present := map[int8]bool{-1: true, 0: true, 1: true}[vote]; !present{
 		return errors.New("Invalid vote, make sure the vote casted is either -1, 0, or 1")
 	}
@@ -90,14 +90,14 @@ func (acc AccountAPI) PostVote(P DisplayPost, vote int8) (error){
 		return errors.New("Failed to find account: %v")
 	}
 
-	_, err = acct.Vote(acc.opts, vote, P.Post.PostNumber)
+	_, err = acct.Vote(acc.opts, targ, vote, P.Post.PostNumber)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (acc AccountAPI) VoteComment(P DisplayPost, CommentID int64, vote int8)(error){
+func (acc AccountAPI) VoteComment(targ common.Address, P DisplayPost, CommentID int64, vote int8)(error){
 	if _, present := map[int8]bool{-1: true, 0: true, 1: true}[vote]; !present{
 		return errors.New("Invalid vote, make sure the vote casted is either -1, 0, or 1")
 	}
@@ -106,7 +106,7 @@ func (acc AccountAPI) VoteComment(P DisplayPost, CommentID int64, vote int8)(err
 		return errors.New("Failed to find account: %v")
 	}
 
-	_, err = acct.CommentVote(acc.opts, vote, P.Post.PostNumber, big.NewInt(CommentID))
+	_, err = acct.CommentVote(acc.opts, targ, vote, P.Post.PostNumber, big.NewInt(CommentID))
 	if err != nil {
 		return err
 	}
@@ -116,4 +116,12 @@ func (acc AccountAPI) VoteComment(P DisplayPost, CommentID int64, vote int8)(err
 func (acc AccountAPI) DeletePost(PostID int64){
 	acc.account.DeletePost(acc.opts, big.NewInt(PostID))
 	// Needs some interaction with ipfs
+}
+
+func (acc AccountAPI) Follow(targ common.Address,){
+	acc.account.Follow(acc.opts, targ)
+}
+
+func (acc AccountAPI) UnFollow(targ common.Address,){
+	acc.account.UnFollow(acc.opts, targ)
 }
