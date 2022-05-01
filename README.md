@@ -45,13 +45,12 @@ DeInsta takes the image sharing feature of instagram and adds the storage capabi
 
 
 **Frontend**
-- [ ] Develop front end that is passable (Not a front end guy lol)
+- [ ] Develop front end that is passable
 - [ ] Choose a frontend from existing builds and modify the API to be workable with golang
 </details>
 
 ## **CREDITS:**
 **Credit goes to Sandermoen.**
 
-I am NOT a frontend guy. I'm slowly attempting to learn and incorporate React. 
-The beautiful front end is courtesy of this repo https://github.com/Sandermoen/instaclone.
-I will be gradually ripping apart the backend and incorporating blockchain functionality.
+
+Front end is inspired by this repo https://github.com/Sandermoen/instaclone.
